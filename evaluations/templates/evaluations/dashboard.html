@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Teacher Evaluation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<nav class="bg-white border-b border-slate-200 p-4 mb-8">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+        <a href="{% url 'dashboard' %}" class="text-2xl font-black text-indigo-600 tracking-tighter">EVAL.SYS</a>
+        <div class="flex items-center gap-4">
+            <span class="text-sm text-slate-500 italic font-bold text-red-600">ADMIN MODE</span>
+            <a href="{% url 'logout' %}" class="text-sm font-bold text-slate-700 hover:text-red-600">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-5xl mx-auto px-4">
+    <div class="flex justify-between items-end mb-10">
+        <div>
+            <h1 class="text-4xl font-black text-slate-900">Faculty Overview</h1>
+            <p class="text-slate-500 mt-1">Summary of evaluation results from all students.</p>
+        </div>
+        <a href="{% url 'export' %}" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-indigo-700 transition-all">
+            Download CSV Report
+        </a>
+    </div>
+
+    <div class="grid gap-6">
+        {% for t in results %}
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-center group">
+            
+            <div class="text-center md:text-left">
+                <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full">
+                    {{ t.dept }}
+                </span>
+                <h2 class="text-2xl font-extrabold text-slate-800 mt-3 uppercase">{{ t.name }}</h2>
+                <p class="text-slate-400 text-sm">Overall performance based on feedback</p>
+            </div>
+
+            <div class="flex flex-col items-center md:items-end mt-6 md:mt-0">
+                <div class="text-6xl font-black text-indigo-600">
+                    {{ t.score|default:0 }}<span class="text-2xl font-light text-slate-300 ml-1">%</span>
+                </div>
+                <div class="w-48 bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden border border-slate-200">
+                    <div class="bg-indigo-500 h-full transition-all duration-1000" style="width: {{ t.score|default:0 }}%"></div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-20 text-center text-slate-400">
+            No evaluation records found in the system.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<footer class="mt-20 py-10 text-center text-slate-400 text-xs">
+    &copy; 2026 Teacher Evaluation System | Admin Panel
+</footer>
+
+</body>
+</html>
