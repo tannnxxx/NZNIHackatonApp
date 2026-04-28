@@ -1,0 +1,45 @@
+TEACHER EVALUATION SYSTEM - SETUP INSTRUCTIONS
+
+
+PAANO I-SETUP APPLICATION:
+
+1. MGA REQUIREMENTS
+   Siguraduhin na naka-install ang mga ito sa inyong machine:
+   - Python 3.10 o mas mataas.
+   - Django (i-install gamit ang: pip install django)
+
+2. DATABASE INITIALIZATION (SQLite)
+   Dahil gamit natin ay SQLite, hindi na kailangan ng mabigat na SQL server. 
+   Sundin lang ang steps na ito para ma-setup ang tables:
+   
+   a. Buksan ang Terminal o CMD sa loob ng project folder.
+   b. I-run ang migrations:
+      python manage.py migrate
+   
+
+3. PAG-RUN NG SERVER
+   Kapag okay na ang database, i-type ang command na ito:
+   python manage.py runserver
+
+   Pagkatapos, i-open ang browser at pumunta sa: http://127.0.0.1:8000/
+
+4. ACCOUNTS & ROLES
+   - REGISTRATION: Pwedeng mag-register ang mga students sa 'Register' page.
+   - ADMIN: Para makita ang Admin Dashboard (Results Only), kailangan niyo ng Superuser account.
+     I-run ang command na ito sa terminal:
+     python manage.py createsuperuser (sundan ang prompts para sa username/password).
+
+5. PAANO GUMAGANA ANG SYSTEM?
+   - STUDENT VIEW: Pag-log in ng student, makikita nila ang listahan ng professors. 
+     I-click lang ang "Evaluate Now" para mag-submit. Automatic na magiging "Done" ang status 
+     kapag tapos na sila.
+   - ADMIN VIEW: Dito mo makikita ang "Composite Ratings" o yung final score ng bawat professor. 
+     Note: Inalis na ang evaluation link sa Admin para pure results at analytics lang ang makikita rito.
+   - EXPORT DATA: May button sa Admin Dashboard para i-download ang results bilang CSV file.
+
+
+6. COMPOSITE SCORING LOGIC
+   Ang final rating ay naku-compute base sa sumusunod na weight:
+   - Students: 50%
+   - Program Head: 30%
+   - Dean: 20%
