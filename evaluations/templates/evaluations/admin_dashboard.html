@@ -9,9 +9,6 @@
 
 <body class="bg-slate-50 min-h-screen">
 
-<!-- =========================
-     NAVBAR
-========================= -->
 <nav class="bg-white border-b border-slate-200 p-4 mb-8">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
 
@@ -35,40 +32,37 @@
     </div>
 </nav>
 
-<!-- =========================
-     HEADER
-========================= -->
 <div class="max-w-6xl mx-auto px-4">
 
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
 
         <div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">
+            <h1 class="text-4xl font-black text-slate-900">
                 Admin Dashboard
             </h1>
-
             <p class="text-slate-500 mt-1">
                 Teacher Evaluation System Overview
             </p>
         </div>
 
         <a href="{% url 'export' %}"
-           class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg transition-all">
+           class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg transition">
             Generate CSV Report
         </a>
 
     </div>
 
-    <!-- =========================
-         TEACHER LIST
-    ========================= -->
+    {% if not results %}
+    <div class="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-20 text-center text-slate-400">
+        No teachers found. Please add teachers in the admin panel.
+    </div>
+    {% endif %}
+
     <div class="grid gap-6">
 
         {% for t in results %}
+        <div class="bg-white p-8 rounded-3xl shadow-sm border flex flex-col md:flex-row justify-between items-center hover:shadow-xl transition">
 
-        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-center hover:shadow-xl transition-all">
-
-            <!-- LEFT SIDE -->
             <div class="text-center md:text-left">
 
                 <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full">
@@ -85,59 +79,34 @@
 
             </div>
 
-            <!-- RIGHT SIDE -->
             <div class="flex flex-col items-center md:items-end mt-6 md:mt-0">
 
-                <!-- SCORE -->
-                <div class="text-6xl font-black text-indigo-600 tracking-tighter">
-                    {{ t.score|default:0 }}
-                    <span class="text-2xl font-light text-slate-300 ml-1">%</span>
+                <div class="text-6xl font-black text-indigo-600">
+                    {{ t.score|default_if_none:0 }}%
                 </div>
 
-                <p class="text-slate-400 text-xs font-bold uppercase mt-2">
-                    Composite Rating
-                </p>
-
-                <!-- PROGRESS BAR -->
                 <div class="w-48 bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden">
-
-                    <div class="bg-indigo-500 h-full transition-all duration-1000"
-                         data-width="{{ t.score|default:0 }}">
+                    <div class="bg-indigo-500 h-full"
+                         data-width="{{ t.score|default_if_none:0 }}">
                     </div>
-
                 </div>
 
             </div>
 
         </div>
-
-        {% empty %}
-
-        <!-- EMPTY STATE -->
-        <div class="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-20 text-center text-slate-400">
-            No teachers found. Please add teachers in admin panel.
-        </div>
-
         {% endfor %}
 
     </div>
 
 </div>
 
-<!-- =========================
-     FOOTER
-========================= -->
 <footer class="mt-20 py-10 text-center text-slate-400 text-xs">
     &copy; 2026 Teacher Evaluation System
 </footer>
 
-<!-- =========================
-     PROGRESS BAR SCRIPT
-========================= -->
 <script>
     document.querySelectorAll('[data-width]').forEach(el => {
-        let value = el.getAttribute('data-width');
-        el.style.width = value + '%';
+        el.style.width = el.getAttribute('data-width') + '%';
     });
 </script>
 

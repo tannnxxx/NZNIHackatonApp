@@ -9,66 +9,128 @@
 
 <body class="bg-slate-50 min-h-screen">
 
+<!-- NAVBAR -->
 <nav class="bg-white border-b border-slate-200 p-4 mb-8 shadow-sm">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
-        <a href="{% url 'student_dashboard' %}" class="text-2xl font-black text-indigo-600 tracking-tighter">
+
+        <a href="{% url 'student_dashboard' %}" class="text-2xl font-black text-indigo-600">
             EVAL.SYS
         </a>
 
         <div class="flex items-center gap-4">
-            <span class="text-sm text-slate-500 italic">
-                Logged in: <strong class="text-slate-800">{{ user.username }}</strong>
+            <span class="text-sm text-slate-500">
+                Student: <strong>{{ user.username }}</strong>
             </span>
-            <a href="{% url 'logout' %}" class="text-sm font-bold text-red-500 hover:text-red-700 transition-colors">
+
+            <a href="{% url 'logout' %}"
+               class="text-sm font-bold text-red-500 hover:text-red-700">
                 Logout
             </a>
         </div>
+
     </div>
 </nav>
 
+<!-- HEADER -->
 <div class="max-w-6xl mx-auto px-4">
+
     <div class="mb-10">
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight">Student Dashboard</h1>
-        <p class="text-slate-500 mt-1">Please select a professor from the list to submit your evaluation.</p>
+        <h1 class="text-4xl font-black text-slate-900">
+            Student Dashboard
+        </h1>
+
+        <p class="text-slate-500 mt-1">
+            Select a teacher to evaluate
+        </p>
+
+        <!-- PROFILE INFO -->
+        <div class="mt-3 text-sm text-slate-600">
+            Section:
+            <strong>
+                {{ profile.year_level|default:"Not Set" }} - {{ profile.section|default:"Not Set" }}
+            </strong>
+        </div>
     </div>
 
+    <!-- ⚠️ PROFILE WARNING -->
+    {% if not profile.year_level or not profile.section %}
+    <div class="bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-xl mb-6">
+        ⚠️ Your profile is incomplete. Please contact admin to set your Year Level and Section.
+    </div>
+    {% endif %}
+
+    <!-- TEACHER LIST -->
     <div class="grid gap-6">
+
         {% for teacher in teachers %}
-        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-center hover:shadow-md transition-all group">
-            
+
+        <div class="bg-white p-8 rounded-3xl shadow-sm border flex flex-col md:flex-row justify-between items-center hover:shadow-lg transition">
+
+            <!-- LEFT -->
             <div class="text-center md:text-left">
-                <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-full group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                    {{ teacher.department }}
+
+                <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full">
+                    {{ teacher.department|default:"N/A" }}
                 </span>
-                <h2 class="text-2xl font-extrabold text-slate-800 mt-3 uppercase">
+
+                <h2 class="text-2xl font-extrabold text-slate-800 mt-3">
                     {{ teacher.name }}
                 </h2>
-                <p class="text-slate-400 text-sm mt-1">Academic Year 2025-2026</p>
+
+                <p class="text-slate-400 text-sm mt-1">
+                    {{ teacher.subject }}
+                </p>
+
             </div>
 
+            <!-- RIGHT -->
             <div class="mt-6 md:mt-0">
+
                 {% if teacher.id in evaluated_ids %}
-                    <button disabled class="inline-flex items-center justify-center bg-emerald-100 text-emerald-600 px-8 py-4 rounded-2xl font-bold cursor-not-allowed border border-emerald-200">
-                        <span class="mr-2">✔</span> Done
+
+                    <button disabled
+                        class="bg-emerald-100 text-emerald-600 px-6 py-3 rounded-2xl font-bold border border-emerald-200 cursor-not-allowed">
+                        ✔ Already Evaluated
                     </button>
+
                 {% else %}
-                    <a href="{% url 'submit_eval' teacher.id %}" 
-                       class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-100 transition-all active:scale-95">
-                        ⭐ Evaluate Now
+
+                    <a href="{% url 'submit_eval' teacher.id %}"
+                       class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg transition">
+                        ⭐ Evaluate
                     </a>
+
                 {% endif %}
+
             </div>
+
         </div>
+
         {% empty %}
-        <div class="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-20 text-center text-slate-400">
-            No professors found in the list.
+
+        {% if not profile.year_level or not profile.section %}
+
+        <div class="bg-white border-2 border-dashed border-yellow-300 rounded-3xl p-20 text-center text-yellow-600">
+            Please complete your profile to view teachers.
         </div>
+
+        {% else %}
+
+        <div class="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-20 text-center text-slate-400">
+            No teachers available for your section.
+        </div>
+
+        {% endif %}
+
         {% endfor %}
+
     </div>
+
 </div>
 
+<!-- FOOTER -->
 <footer class="mt-20 py-10 text-center text-slate-400 text-xs">
-    &copy; 2026 Teacher Evaluation System • GRC Student Portal
+    &copy; 2026 Teacher Evaluation System
 </footer>
 
 </body>

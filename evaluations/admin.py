@@ -1,16 +1,80 @@
 from django.contrib import admin
-from .models import Teacher, Evaluation
+from .models import Teacher, Evaluation, Profile
 
-# Para mas maganda ang itsura ng listahan sa Admin
+
+# =========================
+# 👨‍🏫 TEACHER ADMIN (IMPROVED)
+# =========================
+@admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('name', 'department')
-    search_fields = ('name',)
+    list_display = (
+        'name',
+        'department',
+        'subject',
+        'year_level',
+        'section'
+    )
 
+    list_filter = (
+        'department',
+        'year_level',
+        'section'
+    )
+
+    search_fields = (
+        'name',
+        'department',
+        'subject'
+    )
+
+
+# =========================
+# 📝 EVALUATION ADMIN (IMPROVED)
+# =========================
+@admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):
-    # Ipinapakita ang teacher, role, at score sa listahan
-    list_display = ('teacher', 'role', 'score', 'rater', 'created_at')
-    list_filter = ('role', 'teacher') # Filter sa gilid para madaling maghanap
+    list_display = (
+        'teacher',
+        'score',
+        'role',
+        'year_level',
+        'section',
+        'created_at'
+    )
 
-# I-register ang mga models
-admin.site.register(Teacher, TeacherAdmin)
-admin.site.register(Evaluation, EvaluationAdmin)
+    list_filter = (
+        'role',
+        'year_level',
+        'section',
+        'created_at'
+    )
+
+    search_fields = (
+        'teacher__name',
+        'role'
+    )
+
+    ordering = ('-created_at',)
+
+
+# =========================
+# 👤 PROFILE ADMIN (IMPROVED)
+# =========================
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'role',
+        'year_level',
+        'section'
+    )
+
+    list_filter = (
+        'role',
+        'year_level',
+        'section'
+    )
+
+    search_fields = (
+        'user__username',
+    )
